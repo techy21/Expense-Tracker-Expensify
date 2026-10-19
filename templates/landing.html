@@ -24,7 +24,7 @@
         </p>
         <div class="lp-hero-actions">
             <a href="{{ url_for('register') }}" class="lp-btn">Create free account</a>
-            <a href="#" class="lp-btn">See how it works</a>
+            <a href="#" class="lp-btn" id="how-it-works-open" aria-haspopup="dialog">See how it works</a>
         </div>
 
         <div class="lp-window">
@@ -100,4 +100,51 @@
     </div>
 </section>
 
+<dialog class="lp-modal" id="how-it-works-modal" aria-label="How Spendly works">
+    <div class="lp-modal-content">
+        <button type="button" class="lp-modal-close" id="how-it-works-close" aria-label="Close video">&times;</button>
+        <div class="lp-modal-video">
+            {# Placeholder video — replace the ID in data-src with the real one #}
+            <iframe
+                id="how-it-works-video"
+                data-src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0"
+                title="How Spendly works"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        </div>
+    </div>
+</dialog>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        var openBtn = document.getElementById('how-it-works-open');
+        var modal = document.getElementById('how-it-works-modal');
+        var closeBtn = document.getElementById('how-it-works-close');
+        var video = document.getElementById('how-it-works-video');
+
+        openBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            video.src = video.dataset.src;
+            modal.showModal();
+        });
+
+        closeBtn.addEventListener('click', function () {
+            modal.close();
+        });
+
+        // Clicks on the dialog itself (not its content) are on the backdrop
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) modal.close();
+        });
+
+        // Fires for every way of closing, including Esc. Clearing the
+        // src unloads the iframe so the video stops playing.
+        modal.addEventListener('close', function () {
+            video.src = '';
+        });
+    })();
+</script>
 {% endblock %}

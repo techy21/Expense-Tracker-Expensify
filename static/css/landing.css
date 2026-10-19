@@ -181,3 +181,59 @@
     .lp-stats { grid-template-columns: 1fr; }
     .lp-bar-row { grid-template-columns: 60px 1fr; gap: 1rem; }
 }
+
+/* ------------------------------------------------------------------ */
+/* "See how it works" video modal                                      */
+/* ------------------------------------------------------------------ */
+
+.lp-modal {
+    border: none;
+    padding: 0;
+    background: transparent;
+    width: min(900px, calc(100% - 2rem));
+    max-width: none;
+    margin: auto;
+    overflow: visible;
+}
+
+.lp-modal::backdrop {
+    background: rgba(15, 15, 15, 0.7);
+}
+
+.lp-modal-content {
+    position: relative;
+    background: var(--ink);
+    border-radius: var(--radius-md);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.lp-modal-video {
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.lp-modal-video iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+.lp-modal-close {
+    position: absolute;
+    top: -2.75rem;
+    right: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: none;
+    border-radius: 50%;
+    background: var(--paper-card);
+    color: var(--ink);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.lp-modal-close:hover { background: var(--paper-warm); }
