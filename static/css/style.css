@@ -516,6 +516,11 @@ a { color: inherit; text-decoration: none; }
 
 .legal-section ul { padding-left: 1.25rem; }
 
+.legal-section strong { color: var(--ink); font-weight: 600; }
+
+.legal-section a { color: var(--accent); }
+.legal-section a:hover { text-decoration: underline; }
+
 /* ------------------------------------------------------------------ */
 /* Footer                                                              */
 /* ------------------------------------------------------------------ */
@@ -545,6 +550,14 @@ a { color: inherit; text-decoration: none; }
     font-size: 0.8rem;
     color: var(--ink-faint);
 }
+
+.footer-inner a {
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    transition: color 0.15s;
+}
+
+.footer-inner a:hover { color: var(--accent-2); }
 
 /* ------------------------------------------------------------------ */
 /* Responsive                                                          */
