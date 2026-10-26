@@ -1,150 +1,174 @@
-{% extends "base.html" %}
-
-{% block title %}Spendly — Track Every Rupee{% endblock %}
-
-{% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Spendlifyy — Track Every Rupee{%
+endblock %} {% block head %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/landing.css') }}"
+/>
+{% endblock %} {% block content %}
 
 <section class="lp-hero">
-    <div class="lp-hero-inner">
-        <div class="lp-hero-badge">
-            <span class="lp-hero-dot"></span>
-            Free to use · No credit card needed
-        </div>
-        <h1 class="lp-hero-title">
-            Track every rupee.<br>
-            <span>Know where it goes.</span>
-        </h1>
-        <p class="lp-hero-subtitle">
-            Spendly helps you log expenses, spot patterns, and stay
-            on budget — without the spreadsheet headache.
-        </p>
-        <div class="lp-hero-actions">
-            <a href="{{ url_for('register') }}" class="lp-btn">Create free account</a>
-            <a href="#" class="lp-btn" id="how-it-works-open" aria-haspopup="dialog">See how it works</a>
-        </div>
-
-        <div class="lp-window">
-            <div class="lp-window-dots">
-                <span></span><span></span><span></span>
-            </div>
-            <div class="lp-stats">
-                <div class="lp-stat">
-                    <p class="lp-stat-label">This month</p>
-                    <p class="lp-stat-value">₹18,240</p>
-                    <p class="lp-stat-note is-up">+12% vs last</p>
-                </div>
-                <div class="lp-stat">
-                    <p class="lp-stat-label">Budget left</p>
-                    <p class="lp-stat-value">₹6,760</p>
-                    <p class="lp-stat-note is-good">43% remaining</p>
-                </div>
-                <div class="lp-stat">
-                    <p class="lp-stat-label">Transactions</p>
-                    <p class="lp-stat-value">34</p>
-                    <p class="lp-stat-note">this month</p>
-                </div>
-            </div>
-            <div class="lp-bars">
-                <div class="lp-bar-row">
-                    <span class="lp-bar-cat">Food</span>
-                    <div class="lp-bar-track">
-                        <div class="lp-bar lp-bar-food" style="width: 72%"></div>
-                    </div>
-                </div>
-                <div class="lp-bar-row">
-                    <span class="lp-bar-cat">Travel</span>
-                    <div class="lp-bar-track">
-                        <div class="lp-bar lp-bar-travel" style="width: 48%"></div>
-                    </div>
-                </div>
-                <div class="lp-bar-row">
-                    <span class="lp-bar-cat">Bills</span>
-                    <div class="lp-bar-track">
-                        <div class="lp-bar lp-bar-bills" style="width: 38%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="lp-hero-inner">
+    <div class="lp-hero-badge">
+      <span class="lp-hero-dot"></span>
+      Free to use · No credit card needed
     </div>
+    <h1 class="lp-hero-title">
+      Track every rupee.<br />
+      <span>Know where it goes.</span>
+    </h1>
+    <p class="lp-hero-subtitle">
+      Spendlify helps you log expenses, spot patterns, and stay on budget —
+      without the spreadsheet headache.
+    </p>
+    <div class="lp-hero-actions">
+      <a href="{{ url_for('register') }}" class="lp-btn">Create free account</a>
+      <a href="#" class="lp-btn" id="how-it-works-open" aria-haspopup="dialog"
+        >See how it works</a
+      >
+    </div>
+
+    <div class="lp-window">
+      <div class="lp-window-dots"><span></span><span></span><span></span></div>
+      <div class="lp-stats">
+        <div class="lp-stat">
+          <p class="lp-stat-label">This month</p>
+          <p class="lp-stat-value">₹18,240</p>
+          <p class="lp-stat-note is-up">+12% vs last</p>
+        </div>
+        <div class="lp-stat">
+          <p class="lp-stat-label">Budget left</p>
+          <p class="lp-stat-value">₹6,760</p>
+          <p class="lp-stat-note is-good">43% remaining</p>
+        </div>
+        <div class="lp-stat">
+          <p class="lp-stat-label">Transactions</p>
+          <p class="lp-stat-value">34</p>
+          <p class="lp-stat-note">this month</p>
+        </div>
+      </div>
+      <div class="lp-bars">
+        <div class="lp-bar-row">
+          <span class="lp-bar-cat">Food</span>
+          <div class="lp-bar-track">
+            <div class="lp-bar lp-bar-food" style="width: 72%"></div>
+          </div>
+        </div>
+        <div class="lp-bar-row">
+          <span class="lp-bar-cat">Travel</span>
+          <div class="lp-bar-track">
+            <div class="lp-bar lp-bar-travel" style="width: 48%"></div>
+          </div>
+        </div>
+        <div class="lp-bar-row">
+          <span class="lp-bar-cat">Bills</span>
+          <div class="lp-bar-track">
+            <div class="lp-bar lp-bar-bills" style="width: 38%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="features">
-    <div class="features-inner">
-        <div class="feature-card">
-            <div class="feature-icon">₹</div>
-            <h3 class="feature-title">Log expenses instantly</h3>
-            <p class="feature-body">Add any expense in seconds. Category, amount, date, description — all in one simple form.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">◎</div>
-            <h3 class="feature-title">Understand your patterns</h3>
-            <p class="feature-body">See exactly where your money goes with category breakdowns and monthly summaries.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">◷</div>
-            <h3 class="feature-title">Filter by time period</h3>
-            <p class="feature-body">View your spending for any date range — last week, last month, or a custom period.</p>
-        </div>
+  <div class="features-inner">
+    <div class="feature-card">
+      <div class="feature-icon">₹</div>
+      <h3 class="feature-title">Log expenses instantly</h3>
+      <p class="feature-body">
+        Add any expense in seconds. Category, amount, date, description — all in
+        one simple form.
+      </p>
     </div>
+    <div class="feature-card">
+      <div class="feature-icon">◎</div>
+      <h3 class="feature-title">Understand your patterns</h3>
+      <p class="feature-body">
+        See exactly where your money goes with category breakdowns and monthly
+        summaries.
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">◷</div>
+      <h3 class="feature-title">Filter by time period</h3>
+      <p class="feature-body">
+        View your spending for any date range — last week, last month, or a
+        custom period.
+      </p>
+    </div>
+  </div>
 </section>
 
 <section class="cta-section">
-    <div class="cta-inner">
-        <h2 class="cta-title">Ready to take control?</h2>
-        <p class="cta-body">Join thousands of people who track their expenses with Spendly.</p>
-        <a href="{{ url_for('register') }}" class="btn-primary">Create free account</a>
-    </div>
+  <div class="cta-inner">
+    <h2 class="cta-title">Ready to take control?</h2>
+    <p class="cta-body">
+      Join thousands of people who track their expenses with Spendlify.
+    </p>
+    <a href="{{ url_for('register') }}" class="btn-primary"
+      >Create free account</a
+    >
+  </div>
 </section>
 
-<dialog class="lp-modal" id="how-it-works-modal" aria-label="How Spendly works">
-    <div class="lp-modal-content">
-        <button type="button" class="lp-modal-close" id="how-it-works-close" aria-label="Close video">&times;</button>
-        <div class="lp-modal-video">
-            {# Placeholder video — replace the ID in data-src with the real one #}
-            <iframe
-                id="how-it-works-video"
-                data-src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0"
-                title="How Spendly works"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
-        </div>
+<dialog class="lp-modal" id="how-it-works-modal" aria-label="How Spendlify works">
+  <div class="lp-modal-content">
+    <button
+      type="button"
+      class="lp-modal-close"
+      id="how-it-works-close"
+      aria-label="Close video"
+    >
+      &times;
+    </button>
+    <div class="lp-modal-video">
+      {# Placeholder video — replace the ID in data-src with the real one #}
+      <iframe
+        id="how-it-works-video"
+        data-src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0"
+        title="How Spendlify works"
+        allow="
+          accelerometer;
+          autoplay;
+          clipboard-write;
+          encrypted-media;
+          gyroscope;
+          picture-in-picture;
+        "
+        allowfullscreen
+      ></iframe>
     </div>
+  </div>
 </dialog>
 
-{% endblock %}
-
-{% block scripts %}
+{% endblock %} {% block scripts %}
 <script>
-    (function () {
-        var openBtn = document.getElementById('how-it-works-open');
-        var modal = document.getElementById('how-it-works-modal');
-        var closeBtn = document.getElementById('how-it-works-close');
-        var video = document.getElementById('how-it-works-video');
+  (function () {
+    var openBtn = document.getElementById("how-it-works-open");
+    var modal = document.getElementById("how-it-works-modal");
+    var closeBtn = document.getElementById("how-it-works-close");
+    var video = document.getElementById("how-it-works-video");
 
-        openBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            video.src = video.dataset.src;
-            modal.showModal();
-        });
+    openBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      video.src = video.dataset.src;
+      modal.showModal();
+    });
 
-        closeBtn.addEventListener('click', function () {
-            modal.close();
-        });
+    closeBtn.addEventListener("click", function () {
+      modal.close();
+    });
 
-        // Clicks on the dialog itself (not its content) are on the backdrop
-        modal.addEventListener('click', function (e) {
-            if (e.target === modal) modal.close();
-        });
+    // Clicks on the dialog itself (not its content) are on the backdrop
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) modal.close();
+    });
 
-        // Fires for every way of closing, including Esc. Clearing the
-        // src unloads the iframe so the video stops playing.
-        modal.addEventListener('close', function () {
-            video.src = '';
-        });
-    })();
+    // Fires for every way of closing, including Esc. Clearing the
+    // src unloads the iframe so the video stops playing.
+    modal.addEventListener("close", function () {
+      video.src = "";
+    });
+  })();
 </script>
 {% endblock %}
