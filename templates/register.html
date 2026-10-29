@@ -13,7 +13,7 @@
       <div class="auth-error">{{ error }}</div>
       {% endif %}
 
-      <form method="POST" action="/register">
+      <form method="POST" action="{{ url_for('register') }}">
         <div class="form-group">
           <label for="name">Full name</label>
           <input
@@ -22,6 +22,7 @@
             name="name"
             class="form-input"
             placeholder="Nitish Kumar"
+            value="{{ name or '' }}"
             required
             autofocus
           />
@@ -34,6 +35,7 @@
             name="email"
             class="form-input"
             placeholder="nitish@example.com"
+            value="{{ email or '' }}"
             required
           />
         </div>
@@ -45,6 +47,7 @@
             name="password"
             class="form-input"
             placeholder="Min. 8 characters"
+            minlength="8"
             required
           />
         </div>
