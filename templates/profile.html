@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block title %}Profile — Spendlify{% endblock %} {%
+block content %}
+
+<section class="auth-section">
+  <div class="auth-container">
+    <div class="auth-header">
+      <h1 class="auth-title">Hi, {{ session.user_name }}</h1>
+      <p class="auth-subtitle">You're signed in to Spendlify</p>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-success">
+        Your profile and expense summary are coming soon.
+      </div>
+    </div>
+
+    <p class="auth-switch">
+      Not you?
+      <a href="{{ url_for('logout') }}">Sign out</a>
+    </p>
+  </div>
+</section>
+
+{% endblock %}
