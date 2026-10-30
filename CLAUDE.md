@@ -2,14 +2,14 @@
 
 ## Project overview
 
-Spendlify is a lightweight personal expense tracker built with Flask and SQLite.
+Expensify is a lightweight personal expense tracker built with Flask and SQLite.
 
 ---
 
 ## Architecture
 
 ```
-Spendlify/
+Expensify/
 ├── app.py              # All routes — single file, no blueprints
 ├── database/
 │   └── db.py           # SQLite helpers: get_db(), init_db(), seed_db()

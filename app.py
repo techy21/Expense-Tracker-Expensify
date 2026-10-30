@@ -90,6 +90,51 @@ def logout():
     return redirect(url_for("login"))
 
 
+@app.route("/profile")
+def profile():
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    # Hardcoded sample data mirroring seed_db() — replaced by DB queries in Step 5
+    user = {
+        "name": "Demo User",
+        "email": "demo@expensify.com",
+        "initials": "DU",
+        "member_since": "October 2026",
+    }
+    stats = {
+        "total_spent": 265.54,
+        "transaction_count": 8,
+        "top_category": "Bills",
+    }
+    transactions = [
+        {"date": "25 Oct 2026", "description": "Groceries", "category": "Food", "amount": 42.30},
+        {"date": "20 Oct 2026", "description": "Gift wrap", "category": "Other", "amount": 10.00},
+        {"date": "15 Oct 2026", "description": "New shoes", "category": "Shopping", "amount": 49.99},
+        {"date": "12 Oct 2026", "description": "Movie night", "category": "Entertainment", "amount": 30.00},
+        {"date": "08 Oct 2026", "description": "Pharmacy", "category": "Health", "amount": 15.75},
+        {"date": "05 Oct 2026", "description": "Electricity", "category": "Bills", "amount": 80.00},
+        {"date": "03 Oct 2026", "description": "Bus pass", "category": "Transport", "amount": 25.00},
+        {"date": "01 Oct 2026", "description": "Lunch", "category": "Food", "amount": 12.50},
+    ]
+    categories = [
+        {"name": "Bills", "total": 80.00, "percent": 30},
+        {"name": "Food", "total": 54.80, "percent": 21},
+        {"name": "Shopping", "total": 49.99, "percent": 19},
+        {"name": "Entertainment", "total": 30.00, "percent": 11},
+        {"name": "Transport", "total": 25.00, "percent": 9},
+        {"name": "Health", "total": 15.75, "percent": 6},
+        {"name": "Other", "total": 10.00, "percent": 4},
+    ]
+    return render_template(
+        "profile.html",
+        user=user,
+        stats=stats,
+        transactions=transactions,
+        categories=categories,
+    )
+
+
 @app.route("/terms")
 def terms():
     return render_template("terms.html")
@@ -103,13 +148,6 @@ def privacy():
 # ------------------------------------------------------------------ #
 # Placeholder routes — students will implement these                  #
 # ------------------------------------------------------------------ #
-
-@app.route("/profile")
-def profile():
-    if not session.get("user_id"):
-        return redirect(url_for("login"))
-    return render_template("profile.html")
-
 
 @app.route("/expenses/add")
 def add_expense():

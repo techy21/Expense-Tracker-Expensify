@@ -7,14 +7,14 @@ Turn the static `/login` page into a working sign-in flow and replace the
 password; the app looks up the user, checks the password against the stored
 werkzeug hash and, on success, stores the user's id and name in Flask's signed
 session cookie. Logging out clears that session. This is Step 3 of the
-Spendlify roadmap: it authenticates the accounts created in Step 2 and gives
+Expensify roadmap: it authenticates the accounts created in Step 2 and gives
 Step 4 (Profile) and the expense steps a logged-in user to work with. The
 navbar also changes based on whether someone is signed in.
 
 ## Depends on
 
 - Step 1: Database Setup (`users` table, `get_db()`, seeded demo user
-  `demo@spendlify.com` / `demo123`)
+  `demo@expensify.com` / `demo123`)
 - Step 2: Registration (`get_user_by_email()`, `app.secret_key`, flashed
   messages rendered on `login.html`, `.auth-success` / `.auth-error` styles)
 
@@ -110,8 +110,8 @@ No new dependencies. Uses `flask` (sessions) and `werkzeug.security`
 ## Definition of done
 
 - [ ] `GET /login` shows the sign-in form as before
-- [ ] Signing in with `demo@spendlify.com` / `demo123` redirects to `/profile`
-- [ ] Signing in with `DEMO@Spendlify.com ` (mixed case, trailing space) also
+- [ ] Signing in with `demo@expensify.com` / `demo123` redirects to `/profile`
+- [ ] Signing in with `DEMO@Expensify.com ` (mixed case, trailing space) also
       works
 - [ ] A user freshly created via `/register` can sign in with their password
 - [ ] A wrong password shows "Invalid email or password." and keeps the email

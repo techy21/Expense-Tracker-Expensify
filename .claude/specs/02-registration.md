@@ -6,7 +6,7 @@ Turn the static `/register` page into a working sign-up flow. A visitor submits
 their name, email and password; the app validates the input, hashes the
 password with werkzeug, inserts a new row into the existing `users` table and
 redirects to the sign-in page with a success message. This is Step 2 of the
-Spendlify roadmap: it builds directly on the data layer from Step 1 and creates
+Expensify roadmap: it builds directly on the data layer from Step 1 and creates
 the accounts that Step 3 (Login and Logout) will authenticate. Registration
 does not log the user in or create a session; that belongs to Step 3.
 
@@ -112,7 +112,7 @@ No new dependencies. Uses `flask` and `werkzeug`, which are already in
 - [ ] The new user appears in the `users` table with a werkzeug hash (starting
       with `scrypt:` or `pbkdf2:`) in `password_hash`, not the plain password
 - [ ] The stored email is lowercase with no surrounding whitespace
-- [ ] Registering with `demo@spendlify.com` (or `DEMO@Spendlify.com`) shows
+- [ ] Registering with `demo@expensify.com` (or `DEMO@Expensify.com`) shows
       an "email already registered" error and creates no new row
 - [ ] Submitting a password shorter than 8 characters shows an error and
       creates no row

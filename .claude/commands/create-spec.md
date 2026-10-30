@@ -1,11 +1,11 @@
 ---
-description: Create a spec file and feature branch for the next Spendlify step
+description: Create a spec file and feature branch for the next Expensify step
 argument-hint: "Step number and feature name e.g. 2 registration"
 allowed-tools: Read, Write, Glob, Bash(git:*)
 ---
 
 You are a senior developer spinning up a new feature for the
-Spendlify expense tracker. Always follow the rules in CLAUDE.md.
+Expensify expense tracker. Always follow the rules in CLAUDE.md.
 
 User input: $ARGUMENTS
 
@@ -83,7 +83,7 @@ Generate a spec document with this exact structure:
 ## Overview
 
 One paragraph describing what this feature does and why
-it exists at this stage of the Spendlify roadmap.
+it exists at this stage of the Expensify roadmap.
 
 ## Depends on
 
