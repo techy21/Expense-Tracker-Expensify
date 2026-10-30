@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from datetime import date
+from datetime import date, datetime
 
 from werkzeug.security import generate_password_hash
 
@@ -42,6 +42,77 @@ def create_user(name, email, password):
         return None
     finally:
         conn.close()
+
+
+def get_user_profile(user_id):
+    conn = get_db()
+    user = conn.execute(
+        "SELECT name, email, created_at FROM users WHERE id = ?",
+        (user_id,),
+    ).fetchone()
+    conn.close()
+    if user is None:
+        return None
+    return {
+        "name": user["name"],
+        "email": user["email"],
+        "initials": "".join(word[0] for word in user["name"].split()[:2]).upper(),
+        "member_since": datetime.fromisoformat(user["created_at"]).strftime("%B %Y"),
+    }
+
+
+def get_user_transactions(user_id):
+    conn = get_db()
+    rows = conn.execute(
+        "SELECT date, description, category, amount FROM expenses "
+        "WHERE user_id = ? ORDER BY date DESC, id DESC",
+        (user_id,),
+    ).fetchall()
+    conn.close()
+    return [
+        {
+            "date": date.fromisoformat(row["date"]).strftime("%d %b %Y"),
+            "description": row["description"] or "",
+            "category": row["category"],
+            "amount": row["amount"],
+        }
+        for row in rows
+    ]
+
+
+def get_user_categories(user_id):
+    conn = get_db()
+    rows = conn.execute(
+        "SELECT category, SUM(amount) AS total FROM expenses "
+        "WHERE user_id = ? GROUP BY category ORDER BY total DESC, category ASC",
+        (user_id,),
+    ).fetchall()
+    conn.close()
+    overall = sum(row["total"] for row in rows)
+    return [
+        {
+            "name": row["category"],
+            "total": row["total"],
+            "percent": round(row["total"] / overall * 100) if overall else 0,
+        }
+        for row in rows
+    ]
+
+
+def get_user_stats(user_id):
+    conn = get_db()
+    row = conn.execute(
+        "SELECT COUNT(*) AS count, COALESCE(SUM(amount), 0) AS total FROM expenses "
+        "WHERE user_id = ?",
+        (user_id,),
+    ).fetchone()
+    conn.close()
+    categories = get_user_categories(user_id)
+    return {
+        "total_spent": row["total"],
+        "transaction_count": row["count"],
+        "top_category": categories[0]["name"] if categories else "—",
+    }
 
 
 def init_db():
