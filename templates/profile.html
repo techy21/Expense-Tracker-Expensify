@@ -1,23 +1,87 @@
-{% extends "base.html" %} {% block title %}Profile — Spendlify{% endblock %} {%
-block content %}
+{% extends "base.html" %}
+{% block title %}Profile — Expensify{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}" />
+{% endblock %}
+{% block content %}
 
-<section class="auth-section">
-  <div class="auth-container">
-    <div class="auth-header">
-      <h1 class="auth-title">Hi, {{ session.user_name }}</h1>
-      <p class="auth-subtitle">You're signed in to Spendlify</p>
+<section class="profile-section">
+  <div class="profile-card">
+    <div class="profile-avatar" aria-hidden="true">{{ user.initials }}</div>
+    <div class="profile-info">
+      <h1 class="profile-name">{{ user.name }}</h1>
+      <p class="profile-email">{{ user.email }}</p>
+      <p class="profile-since">Member since {{ user.member_since }}</p>
     </div>
+  </div>
 
-    <div class="auth-card">
-      <div class="auth-success">
-        Your profile and expense summary are coming soon.
+  <div class="stats-grid">
+    <div class="stat-card">
+      <p class="stat-label">Total spent</p>
+      <p class="stat-value">{{ "₹{:,.2f}".format(stats.total_spent) }}</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Transactions</p>
+      <p class="stat-value">{{ stats.transaction_count }}</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Top category</p>
+      <p class="stat-value">{{ stats.top_category }}</p>
+    </div>
+  </div>
+
+  <div class="profile-grid">
+    <section class="panel">
+      <h2 class="panel-title">Transaction history</h2>
+      {% if transactions %}
+      <div class="table-wrap">
+        <table class="expense-table">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Description</th>
+              <th scope="col">Category</th>
+              <th scope="col" class="amount">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for expense in transactions %}
+            <tr>
+              <td class="expense-date">{{ expense.date }}</td>
+              <td>{{ expense.description }}</td>
+              <td><span class="category-badge">{{ expense.category }}</span></td>
+              <td class="amount">{{ "₹{:,.2f}".format(expense.amount) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-    </div>
+      {% else %}
+      <p class="empty-state">No transactions yet.</p>
+      {% endif %}
+    </section>
 
-    <p class="auth-switch">
-      Not you?
-      <a href="{{ url_for('logout') }}">Sign out</a>
-    </p>
+    <section class="panel">
+      <h2 class="panel-title">By category</h2>
+      <ul class="category-list">
+        {% for category in categories %}
+        <li>
+          <div class="category-row-head">
+            <span>{{ category.name }}</span>
+            <span class="category-amount">{{ "₹{:,.2f}".format(category.total) }}</span>
+          </div>
+          <progress
+            class="category-bar"
+            value="{{ category.percent }}"
+            max="100"
+            aria-label="{{ category.name }}: {{ category.percent }}% of spending"
+          ></progress>
+        </li>
+        {% else %}
+        <li class="empty-state">No spending to break down yet.</li>
+        {% endfor %}
+      </ul>
+    </section>
   </div>
 </section>
 
