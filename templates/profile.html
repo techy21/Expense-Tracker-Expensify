@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}" />
 {% endblock %}
 {% block content %}
+{% set is_filtered = start_date or end_date %}
 
 <section class="profile-section">
   <div class="profile-card">
@@ -14,6 +15,49 @@
       <p class="profile-since">Member since {{ user.member_since }}</p>
     </div>
   </div>
+
+  <form class="date-filter" method="get" action="{{ url_for('profile') }}">
+    <div class="date-presets">
+      {% for preset in date_presets %}
+      {% set is_active = start_date == preset.start_date and end_date == preset.end_date %}
+      <a
+        href="{{ url_for('profile', start_date=preset.start_date, end_date=preset.end_date) }}"
+        class="btn-ghost{% if is_active %} is-active{% endif %}"
+        {% if is_active %}aria-current="true"{% endif %}
+      >{{ preset.label }}</a>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="start_date">Start date</label>
+      <input
+        type="date"
+        id="start_date"
+        name="start_date"
+        class="form-input"
+        value="{{ start_date or '' }}"
+      />
+    </div>
+    <div class="form-group">
+      <label for="end_date">End date</label>
+      <input
+        type="date"
+        id="end_date"
+        name="end_date"
+        class="form-input"
+        value="{{ end_date or '' }}"
+      />
+    </div>
+    <div class="date-filter-actions">
+      <button type="submit" class="btn-primary">Apply</button>
+      {% if is_filtered %}
+      <a href="{{ url_for('profile') }}" class="btn-ghost">Clear</a>
+      {% endif %}
+    </div>
+  </form>
+
+  {% if filter_error %}
+  <div class="auth-error" role="alert">{{ filter_error }}</div>
+  {% endif %}
 
   <div class="stats-grid">
     <div class="stat-card">
@@ -57,7 +101,9 @@
         </table>
       </div>
       {% else %}
-      <p class="empty-state">No transactions yet.</p>
+      <p class="empty-state">
+        {% if is_filtered %}No transactions in this date range.{% else %}No transactions yet.{% endif %}
+      </p>
       {% endif %}
     </section>
 
@@ -78,7 +124,9 @@
           ></progress>
         </li>
         {% else %}
-        <li class="empty-state">No spending to break down yet.</li>
+        <li class="empty-state">
+          {% if is_filtered %}No spending in this date range.{% else %}No spending to break down yet.{% endif %}
+        </li>
         {% endfor %}
       </ul>
     </section>
