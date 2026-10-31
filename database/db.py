@@ -11,6 +11,13 @@ DB_PATH = os.path.join(
 
 CATEGORIES = ["Food", "Transport", "Bills", "Health", "Entertainment", "Shopping", "Other"]
 
+DATE_RANGE_CONDITION = "AND (? IS NULL OR date >= ?) AND (? IS NULL OR date <= ?) "
+
+
+def date_range_params(user_id, start_date, end_date):
+    """Return parameters for "WHERE user_id = ?" followed by DATE_RANGE_CONDITION."""
+    return (user_id, start_date, start_date, end_date, end_date)
+
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
@@ -61,12 +68,12 @@ def get_user_profile(user_id):
     }
 
 
-def get_user_transactions(user_id):
+def get_user_transactions(user_id, start_date=None, end_date=None):
     conn = get_db()
     rows = conn.execute(
         "SELECT date, description, category, amount FROM expenses "
-        "WHERE user_id = ? ORDER BY date DESC, id DESC",
-        (user_id,),
+        "WHERE user_id = ? " + DATE_RANGE_CONDITION + "ORDER BY date DESC, id DESC",
+        date_range_params(user_id, start_date, end_date),
     ).fetchall()
     conn.close()
     return [
@@ -80,12 +87,13 @@ def get_user_transactions(user_id):
     ]
 
 
-def get_user_categories(user_id):
+def get_user_categories(user_id, start_date=None, end_date=None):
     conn = get_db()
     rows = conn.execute(
         "SELECT category, SUM(amount) AS total FROM expenses "
-        "WHERE user_id = ? GROUP BY category ORDER BY total DESC, category ASC",
-        (user_id,),
+        "WHERE user_id = ? " + DATE_RANGE_CONDITION +
+        "GROUP BY category ORDER BY total DESC, category ASC",
+        date_range_params(user_id, start_date, end_date),
     ).fetchall()
     conn.close()
     overall = sum(row["total"] for row in rows)
@@ -99,15 +107,15 @@ def get_user_categories(user_id):
     ]
 
 
-def get_user_stats(user_id):
+def get_user_stats(user_id, start_date=None, end_date=None):
     conn = get_db()
     row = conn.execute(
         "SELECT COUNT(*) AS count, COALESCE(SUM(amount), 0) AS total FROM expenses "
-        "WHERE user_id = ?",
-        (user_id,),
+        "WHERE user_id = ? " + DATE_RANGE_CONDITION,
+        date_range_params(user_id, start_date, end_date),
     ).fetchone()
     conn.close()
-    categories = get_user_categories(user_id)
+    categories = get_user_categories(user_id, start_date, end_date)
     return {
         "total_spent": row["total"],
         "transaction_count": row["count"],

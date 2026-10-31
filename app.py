@@ -1,4 +1,6 @@
+import calendar
 import os
+from datetime import date, datetime
 
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
@@ -21,6 +23,53 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-me")
 with app.app_context():
     init_db()
     seed_db()
+
+
+def normalise_date(value):
+    """Return value as YYYY-MM-DD, or None if blank; raise ValueError if invalid."""
+    value = value.strip()
+    if not value:
+        return None
+    return datetime.strptime(value, "%Y-%m-%d").date().isoformat()
+
+
+def parse_date_filter(args):
+    """Return (start_date, end_date, error); bad input gives (None, None, message)."""
+    try:
+        start_date = normalise_date(args.get("start_date", ""))
+        end_date = normalise_date(args.get("end_date", ""))
+    except ValueError:
+        return None, None, "Please enter valid dates."
+
+    # ISO date strings sort in date order, so they can be compared directly.
+    if start_date and end_date and start_date > end_date:
+        return None, None, "Start date must be on or before the end date."
+
+    return start_date, end_date, None
+
+
+def get_date_presets(today):
+    """Return the quick filters; both cover whole calendar months up to this month's end."""
+    last_day = calendar.monthrange(today.year, today.month)[1]
+    month_end = today.replace(day=last_day).isoformat()
+
+    months_back = 2  # the current month plus the two before it
+    total_months = today.year * 12 + (today.month - 1) - months_back
+    year, zero_based_month = divmod(total_months, 12)
+    three_months_start = date(year, zero_based_month + 1, 1).isoformat()
+
+    return [
+        {
+            "label": "This month",
+            "start_date": today.replace(day=1).isoformat(),
+            "end_date": month_end,
+        },
+        {
+            "label": "Last 3 months",
+            "start_date": three_months_start,
+            "end_date": month_end,
+        },
+    ]
 
 
 # ------------------------------------------------------------------ #
@@ -111,12 +160,18 @@ def profile():
         session.clear()
         return redirect(url_for("login"))
 
+    start_date, end_date, filter_error = parse_date_filter(request.args)
+
     return render_template(
         "profile.html",
         user=user,
-        stats=get_user_stats(user_id),
-        transactions=get_user_transactions(user_id),
-        categories=get_user_categories(user_id),
+        stats=get_user_stats(user_id, start_date, end_date),
+        transactions=get_user_transactions(user_id, start_date, end_date),
+        categories=get_user_categories(user_id, start_date, end_date),
+        start_date=start_date,
+        end_date=end_date,
+        filter_error=filter_error,
+        date_presets=get_date_presets(date.today()),
     )
 
 
