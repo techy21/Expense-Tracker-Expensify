@@ -1,6 +1,6 @@
 ---
 name: expensify-ui
-description: Design and build UI for Expensify, the Flask + Jinja + vanilla CSS personal expense tracker (github.com/techy21/Expense-Tracker-Spendlify). Use whenever the user asks to design, create, build, redesign, or improve any Expensify page, screen, component, form, card, list, dashboard, profile, or expense view, including requests like "design the add expense page", "create UI for the dashboard", "build a component for categories", or "make the profile page look better", even if they don't say "Expensify" but are clearly working in that repo. Do not use for UI in other projects.
+description: Design and build UI for Expensify, the Flask + Jinja + vanilla CSS personal expense tracker (github.com/techy21/Expense-Tracker-Expensify). Use whenever the user asks to design, create, build, redesign, or improve any Expensify page, screen, component, form, card, list, dashboard, profile, or expense view, including requests like "design the add expense page", "create UI for the dashboard", "build a component for categories", or "make the profile page look better", even if they don't say "Expensify" but are clearly working in that repo. Do not use for UI in other projects.
 ---
 
 # Expensify UI
