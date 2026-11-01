@@ -1,13 +1,16 @@
 import calendar
+import math
 import os
+import secrets
 from datetime import date, datetime
 
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, abort, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
 
 from database.db import (
+    CATEGORIES,
+    create_expense,
     create_user,
-    get_db,
     get_user_by_email,
     get_user_categories,
     get_user_profile,
@@ -18,11 +21,50 @@ from database.db import (
 )
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-me")
+# Without SECRET_KEY, a random key is used and sessions end when the app restarts.
+app.secret_key = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["CSRF_ENABLED"] = True
+
+MIN_EXPENSE_AMOUNT = 0.01
+MAX_EXPENSE_AMOUNT = 9999999.99
+MAX_DESCRIPTION_LENGTH = 200
 
 with app.app_context():
     init_db()
     seed_db()
+
+
+def get_csrf_token():
+    """Return this session's CSRF token, creating it on first use."""
+    if "csrf_token" not in session:
+        session["csrf_token"] = secrets.token_hex(32)
+    return session["csrf_token"]
+
+
+app.jinja_env.globals["csrf_token"] = get_csrf_token
+
+
+@app.before_request
+def check_csrf_token():
+    if request.method != "POST" or not app.config["CSRF_ENABLED"]:
+        return
+    expected = session.get("csrf_token", "")
+    submitted = request.form.get("csrf_token", "")
+    # Compare bytes, because compare_digest raises TypeError on non-ASCII strings.
+    if not expected or not secrets.compare_digest(expected.encode(), submitted.encode()):
+        abort(400)
+
+
+def get_logged_in_user():
+    """Return the logged-in user's profile, or None, clearing a stale session."""
+    user_id = session.get("user_id")
+    if not user_id:
+        return None
+    user = get_user_profile(user_id)
+    if user is None:
+        session.clear()
+    return user
 
 
 def normalise_date(value):
@@ -46,6 +88,46 @@ def parse_date_filter(args):
         return None, None, "Start date must be on or before the end date."
 
     return start_date, end_date, None
+
+
+def parse_expense_form(form):
+    """Return (expense, error); invalid input gives (None, message)."""
+    try:
+        amount = float(form.get("amount", "").strip())
+    except ValueError:
+        amount = math.nan
+    if not math.isfinite(amount):
+        return None, "Please enter a valid amount."
+
+    # Check the range after rounding, so 0.001 cannot be stored as 0.00.
+    amount = round(amount, 2)
+    if not MIN_EXPENSE_AMOUNT <= amount <= MAX_EXPENSE_AMOUNT:
+        return None, (
+            f"Amount must be between ₹{MIN_EXPENSE_AMOUNT:,.2f} "
+            f"and ₹{MAX_EXPENSE_AMOUNT:,.2f}."
+        )
+
+    category = form.get("category", "")
+    if category not in CATEGORIES:
+        return None, "Please select a valid category."
+
+    try:
+        expense_date = normalise_date(form.get("date", ""))
+    except ValueError:
+        expense_date = None
+    if expense_date is None:
+        return None, "Please enter a valid date."
+
+    description = form.get("description", "").strip()
+    if len(description) > MAX_DESCRIPTION_LENGTH:
+        return None, f"Description must be {MAX_DESCRIPTION_LENGTH} characters or fewer."
+
+    return {
+        "amount": amount,
+        "category": category,
+        "date": expense_date,
+        "description": description or None,
+    }, None
 
 
 def get_date_presets(today):
@@ -151,15 +233,11 @@ def logout():
 
 @app.route("/profile")
 def profile():
-    user_id = session.get("user_id")
-    if not user_id:
-        return redirect(url_for("login"))
-
-    user = get_user_profile(user_id)
+    user = get_logged_in_user()
     if user is None:
-        session.clear()
         return redirect(url_for("login"))
 
+    user_id = session["user_id"]
     start_date, end_date, filter_error = parse_date_filter(request.args)
 
     return render_template(
@@ -172,6 +250,37 @@ def profile():
         end_date=end_date,
         filter_error=filter_error,
         date_presets=get_date_presets(date.today()),
+    )
+
+
+@app.route("/expenses/add", methods=["GET", "POST"])
+def add_expense():
+    if get_logged_in_user() is None:
+        return redirect(url_for("login"))
+
+    form = {"date": date.today().isoformat()}
+    error = None
+    if request.method == "POST":
+        form = request.form
+        expense, error = parse_expense_form(form)
+        if not error:
+            create_expense(
+                session["user_id"],
+                expense["amount"],
+                expense["category"],
+                expense["date"],
+                expense["description"],
+            )
+            flash("Expense added.", "success")
+            return redirect(url_for("profile"))
+
+    return render_template(
+        "add_expense.html",
+        categories=CATEGORIES,
+        form=form,
+        error=error,
+        min_amount=MIN_EXPENSE_AMOUNT,
+        max_description_length=MAX_DESCRIPTION_LENGTH,
     )
 
 
@@ -189,11 +298,6 @@ def privacy():
 # Placeholder routes — students will implement these                  #
 # ------------------------------------------------------------------ #
 
-@app.route("/expenses/add")
-def add_expense():
-    return "Add expense — coming in Step 7"
-
-
 @app.route("/expenses/<int:id>/edit")
 def edit_expense(id):
     return "Edit expense — coming in Step 8"
@@ -205,4 +309,4 @@ def delete_expense(id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    app.run(debug=os.environ.get("FLASK_DEBUG") == "1", port=5001)

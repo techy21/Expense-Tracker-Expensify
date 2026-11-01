@@ -1,0 +1,7 @@
+{% for category, message in get_flashed_messages(with_categories=true) %}
+{% if category == 'success' %}
+<div class="auth-success" role="status">{{ message }}</div>
+{% else %}
+<div class="auth-error" role="alert">{{ message }}</div>
+{% endif %}
+{% endfor %}

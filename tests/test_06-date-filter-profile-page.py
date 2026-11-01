@@ -123,7 +123,7 @@ def error_signal(body):
 @pytest.fixture
 def app(tmp_path, monkeypatch):
     monkeypatch.setattr(db_module, "DB_PATH", str(tmp_path / "test.db"))
-    flask_app.config.update({"TESTING": True})
+    flask_app.config.update({"TESTING": True, "CSRF_ENABLED": False})
     db_module.init_db()
     yield flask_app
 
