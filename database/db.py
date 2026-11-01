@@ -123,6 +123,21 @@ def get_user_stats(user_id, start_date=None, end_date=None):
     }
 
 
+def create_expense(user_id, amount, category, expense_date, description):
+    """Insert one expense and return its new id."""
+    conn = get_db()
+    try:
+        cursor = conn.execute(
+            "INSERT INTO expenses (user_id, amount, category, date, description) "
+            "VALUES (?, ?, ?, ?, ?)",
+            (user_id, amount, category, expense_date, description),
+        )
+        conn.commit()
+        return cursor.lastrowid
+    finally:
+        conn.close()
+
+
 def init_db():
     conn = get_db()
     conn.executescript(

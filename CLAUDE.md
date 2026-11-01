@@ -65,6 +65,9 @@ pip install -r requirements.txt
 # Run dev server (port 5001)
 python app.py
 
+# Optional env vars: FLASK_DEBUG=1 enables debug mode and auto-reload;
+# SECRET_KEY keeps sessions valid across restarts
+
 # Run all tests
 pytest
 
@@ -89,7 +92,7 @@ pytest -s
 | `GET /login`                | Implemented — renders `login.html`    |
 | `GET /logout`               | Stub — Step 3                         |
 | `GET /profile`              | Stub — Step 4                         |
-| `GET /expenses/add`         | Stub — Step 7                         |
+| `GET, POST /expenses/add`   | Implemented — `add_expense.html`      |
 | `GET /expenses/<id>/edit`   | Stub — Step 8                         |
 | `GET /expenses/<id>/delete` | Stub — Step 9                         |
 
